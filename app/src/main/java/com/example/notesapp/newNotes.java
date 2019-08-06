@@ -2,18 +2,46 @@ package com.example.notesapp;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.EditText;
 
 public class newNotes extends AppCompatActivity {
+
+    database newnotedb;
+    String passcategoryid = "";
+    private EditText usernotetitle;
+    private EditText usernotedetail;
+    private EditText usernotecategory;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_notes);
+
+        Intent intent = getIntent();
+        passcategoryid = intent.getStringExtra("passcategoryid");
+
+        usernotecategory = findViewById(R.id.enter_category);
+        usernotetitle = findViewById(R.id.enter_title);
+        usernotedetail = findViewById(R.id.enter_detail);
+
+        newnotedb = new database(this);
+        if(passcategoryid != ""){
+            Cursor catresult = newnotedb.selectCategoryTableWhere(passcategoryid);
+            if (catresult.getCount() == 0) {
+                Log.i("**DB**", "FAIL");
+            } else {
+                while (catresult.moveToNext()) {
+                    usernotecategory.setText(catresult.getString(0));
+                }
+            }
+        }
 
         getSupportActionBar().setTitle("New Note");
 
@@ -33,6 +61,8 @@ public class newNotes extends AppCompatActivity {
         int id = item.getItemId();
         switch(item.getItemId()){
             case R.id.save_new_note:
+
+//                newnotedb.insertNewNoteTable(passcategoryid)
                 successAlert();
             break;
 
@@ -50,10 +80,7 @@ public class newNotes extends AppCompatActivity {
                 .setCancelable(false)
                 .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        Intent mIntent = new Intent(newNotes.this, MainActivity.class);
-                        //Set value to pass on next activity
-                        //mIntent.putExtra("name", "Pritesh Patel");
-                        startActivity(mIntent);
+                        finish();
                     }
                 });
         AlertDialog alert = builder.create();

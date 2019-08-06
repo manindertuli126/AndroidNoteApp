@@ -20,7 +20,7 @@
         android:textSize="24sp" />
 
     <EditText
-        android:id="@+id/entercategory"
+        android:id="@+id/enter_category"
         android:layout_width="364dp"
         android:layout_height="48dp"
         android:layout_marginLeft="20dp"
@@ -45,7 +45,7 @@
         android:textSize="24sp" />
 
     <EditText
-        android:id="@+id/entertitle"
+        android:id="@+id/enter_title"
         android:layout_width="364dp"
         android:layout_height="48dp"
         android:layout_marginLeft="20dp"
@@ -70,7 +70,7 @@
         android:textSize="24sp" />
 
     <EditText
-        android:id="@+id/editText2"
+        android:id="@+id/enter_detail"
         android:layout_width="match_parent"
         android:layout_height="458dp"
         android:layout_marginLeft="20dp"

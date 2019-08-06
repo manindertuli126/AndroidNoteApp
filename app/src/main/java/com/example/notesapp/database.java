@@ -14,6 +14,11 @@ public class database extends SQLiteOpenHelper {
     public static final String TABLE_NAME3 = "NotesImage_tbl";
 
     public static final String CAT_COL = "categoryname";
+    public static final String NOTE_COL1 = "categoryid";
+    public static final String NOTE_COL2 = "notetitle";
+    public static final String NOTE_COL3 = "notedetail";
+    public static final String NOTE_COL4 = "location";
+
 
     public database(Context context) {
         super(context, DATABASE_NAME, null, 1);
@@ -45,9 +50,36 @@ public class database extends SQLiteOpenHelper {
         if (newRowId == -1){return false;}else{return true;}
     }
 
+    public boolean insertNewNoteTable(String categoryid,String title,String detail){
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        // Create a new map of values, where column names are the keys
+        ContentValues values = new ContentValues();
+        values.put(NOTE_COL1, categoryid);
+        values.put(NOTE_COL2, title);
+        values.put(NOTE_COL3, detail);
+
+        // Insert the new row, returning the primary key value of the new row
+        long newRowId = db.insert(TABLE_NAME2, null, values);
+        if (newRowId == -1){return false;}else{return true;}
+    }
+
     public Cursor selectCategoryTable(){
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor res  = db.rawQuery("select * from "+TABLE_NAME1,null);
+        return res;
+    }
+
+    public Cursor selectCategoryTableWhere(String catid){
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor res = db.query
+                (
+                        TABLE_NAME1,
+                        new String[] {CAT_COL},
+                        "id" + "=" + catid,
+                        null, null, null, null, null
+                );
+//        Cursor res  = db.rawQuery("select "+CAT_COL+" from "+TABLE_NAME1+" where id = "+catid,null);
         return res;
     }
 

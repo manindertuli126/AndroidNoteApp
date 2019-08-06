@@ -3,6 +3,7 @@ package com.example.notesapp;
 import android.app.ActionBar;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.support.v7.app.AlertDialog;
@@ -25,6 +26,8 @@ public class MainActivity extends AppCompatActivity {
     private GridView NoteCategory;
     private String alert_text = "";
     database notedb;
+    private SharedPreferences sharedPreferences;
+    boolean defaultCategoryflag = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,10 +43,14 @@ public class MainActivity extends AppCompatActivity {
         notedb = new database(this);
 
         //get category from db
-        // insert default Category
-        notedb.insertCategoryTable("Home");
-        notedb.insertCategoryTable("Work");
-        notedb.insertCategoryTable("Holiday");
+
+//        if(defaultCategoryflag) {
+//            // insert default Category
+//            notedb.insertCategoryTable("Home");
+//            notedb.insertCategoryTable("Work");
+//            notedb.insertCategoryTable("Holiday");
+//            defaultCategoryflag = false;
+//        }
         Cursor resultset = notedb.selectCategoryTable();
         if (resultset.getCount() == 0) {
             Log.i("DB", "FAIL");
@@ -60,10 +67,9 @@ public class MainActivity extends AppCompatActivity {
         NoteCategory.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                //Navigate to NEXT Activity
                 Intent mIntent = new Intent(MainActivity.this, newNotes.class);
-                //Set value to pass on next activity
-                //mIntent.putExtra("name", "Pritesh Patel");
+//                sharedPreferences = getSharedPreferences("passcategoryid", position);
+                mIntent.putExtra("passcategoryid", ""+(position+1));
                 startActivity(mIntent);
             }
         });

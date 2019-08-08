@@ -13,8 +13,8 @@ public class customnotelist extends BaseAdapter {
 
     private Context mContext;
     public static ArrayList<String> notetitleArrayList = new ArrayList<String>();
-    public static ArrayList<String> notedetailArrayList = new ArrayList<String>();
     public static ArrayList<String> notelocationArrayList = new ArrayList<String>();
+    public static ArrayList<String> notedateArrayList = new ArrayList<String>();
 
     public customnotelist(Context nc){
         mContext = nc;
@@ -46,8 +46,8 @@ public class customnotelist extends BaseAdapter {
         TextView notelocation = convertView.findViewById(R.id.note_location);
 
         notetitle.setText(notetitleArrayList.get(position).toString());
-        notedate.setText(notedetailArrayList.get(position).toString());
-        notelocation.setText(notelocationArrayList.get(position).toString());
+        notedate.setText(notedateArrayList.get(position).toString());
+//        notelocation.setText(notelocationArrayList.get(position).toString());
         return convertView;
     }
 }

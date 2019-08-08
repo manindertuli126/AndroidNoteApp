@@ -9,10 +9,10 @@
 
     <GridView
         android:id="@+id/categoryList"
-        android:layout_width="395dp"
-        android:layout_height="715dp"
+        android:layout_width="389dp"
+        android:layout_height="701dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="22dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
         android:gravity="center"

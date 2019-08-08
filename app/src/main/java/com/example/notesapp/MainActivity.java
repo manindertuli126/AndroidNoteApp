@@ -27,7 +27,6 @@ public class MainActivity extends AppCompatActivity {
     private String alert_text = "";
     database notedb;
     private SharedPreferences sharedPreferences;
-    boolean defaultCategoryflag = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,20 +43,21 @@ public class MainActivity extends AppCompatActivity {
 
         //get category from db
 
-//        if(defaultCategoryflag) {
-//            // insert default Category
-//            notedb.insertCategoryTable("Home");
-//            notedb.insertCategoryTable("Work");
-//            notedb.insertCategoryTable("Holiday");
-//            defaultCategoryflag = false;
-//        }
-        Cursor resultset = notedb.selectCategoryTable();
-        if (resultset.getCount() == 0) {
-            Log.i("DB", "FAIL");
-        } else {
-            while (resultset.moveToNext()) {
-                customCategoryConfig.categoryArrayList.add(resultset.getString(1));
+        if(notedb.defaultCategoryflag) {
+            // insert default Category
+            notedb.insertCategoryTable("Home");
+            notedb.insertCategoryTable("Work");
+            notedb.insertCategoryTable("Holiday");
+
+            Cursor resultset = notedb.selectCategoryTable();
+            if (resultset.getCount() == 0) {
+                Log.i("DB", "FAIL");
+            } else {
+                while (resultset.moveToNext()) {
+                    customCategoryConfig.categoryArrayList.add(resultset.getString(1));
+                }
             }
+            notedb.defaultCategoryflag = false;
         }
 
         //create category grid view

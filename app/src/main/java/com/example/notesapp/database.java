@@ -8,6 +8,8 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 public class database extends SQLiteOpenHelper {
 
+    boolean defaultCategoryflag = true;
+
     public static final String DATABASE_NAME = "NoteApp.db";
     public static final String TABLE_NAME1 = "Category_tbl";
     public static final String TABLE_NAME2 = "NotesList_tbl";
@@ -17,7 +19,7 @@ public class database extends SQLiteOpenHelper {
     public static final String NOTE_COL1 = "categoryid";
     public static final String NOTE_COL2 = "notetitle";
     public static final String NOTE_COL3 = "notedetail";
-    public static final String NOTE_COL4 = "location";
+    public static final String NOTE_COL4 = "notedate";
 
 
     public database(Context context) {
@@ -28,8 +30,8 @@ public class database extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL("create table "+TABLE_NAME1+" (id INTEGER PRIMARY KEY AUTOINCREMENT,categoryname TEXT)");
-        db.execSQL("create table "+TABLE_NAME2+" (id INTEGER PRIMARY KEY AUTOINCREMENT,categoryid INTEGER,notetitle TEXT, notedetail TEXT, location TEXT)");
-        db.execSQL("create table "+TABLE_NAME3+" (id INTEGER PRIMARY KEY AUTOINCREMENT,categoryid INTEGER, imagepath TEXT)");
+        db.execSQL("create table "+TABLE_NAME2+" (id INTEGER PRIMARY KEY AUTOINCREMENT,categoryid INTEGER,notetitle TEXT, notedetail TEXT, notedate TEXT)");
+        db.execSQL("create table "+TABLE_NAME3+" (id INTEGER PRIMARY KEY AUTOINCREMENT,noteid INTEGER)");
     }
 
     @Override
@@ -50,7 +52,7 @@ public class database extends SQLiteOpenHelper {
         if (newRowId == -1){return false;}else{return true;}
     }
 
-    public boolean insertNewNoteTable(String categoryid,String title,String detail){
+    public boolean insertNewNoteTable(String categoryid,String title,String detail,String date){
         SQLiteDatabase db = this.getWritableDatabase();
 
         // Create a new map of values, where column names are the keys
@@ -58,6 +60,7 @@ public class database extends SQLiteOpenHelper {
         values.put(NOTE_COL1, categoryid);
         values.put(NOTE_COL2, title);
         values.put(NOTE_COL3, detail);
+        values.put(NOTE_COL4, date);
 
         // Insert the new row, returning the primary key value of the new row
         long newRowId = db.insert(TABLE_NAME2, null, values);
@@ -79,7 +82,6 @@ public class database extends SQLiteOpenHelper {
                         "id" + "=" + catid,
                         null, null, null, null, null
                 );
-//        Cursor res  = db.rawQuery("select "+CAT_COL+" from "+TABLE_NAME1+" where id = "+catid,null);
         return res;
     }
 
@@ -88,4 +90,16 @@ public class database extends SQLiteOpenHelper {
         return db.delete(TABLE_NAME1, "id = ?", new String [] {id});
     }
 
+    //***** note list *****//
+    public Cursor selectNoteListTableWhere(String catid){
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor res = db.query
+                (
+                        TABLE_NAME2,
+                        new String[] {NOTE_COL2,NOTE_COL4},
+                        "id" + "=" + catid,
+                        null, null, null, null, null
+                );
+        return res;
+    }
 }

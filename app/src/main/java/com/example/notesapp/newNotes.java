@@ -10,11 +10,16 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.EditText;
+import android.widget.Toast;
+
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
 public class newNotes extends AppCompatActivity {
 
     database newnotedb;
     String passcategoryid = "";
+    String currentnotedate = "";
     private EditText usernotetitle;
     private EditText usernotedetail;
     private EditText usernotecategory;
@@ -31,6 +36,10 @@ public class newNotes extends AppCompatActivity {
         usernotetitle = findViewById(R.id.enter_title);
         usernotedetail = findViewById(R.id.enter_detail);
 
+        Calendar c = Calendar.getInstance();
+        SimpleDateFormat df = new SimpleDateFormat("dd-MMM-YYYY hh:mm aaa");
+        currentnotedate = df.format(c.getTime());
+
         newnotedb = new database(this);
         if(passcategoryid != ""){
             Cursor catresult = newnotedb.selectCategoryTableWhere(passcategoryid);
@@ -44,7 +53,6 @@ public class newNotes extends AppCompatActivity {
         }
 
         getSupportActionBar().setTitle("New Note");
-
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
@@ -61,7 +69,6 @@ public class newNotes extends AppCompatActivity {
         int id = item.getItemId();
         switch(item.getItemId()){
             case R.id.save_new_note:
-
 //                newnotedb.insertNewNoteTable(passcategoryid)
                 successAlert();
             break;
@@ -80,7 +87,18 @@ public class newNotes extends AppCompatActivity {
                 .setCancelable(false)
                 .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        finish();
+                        //insert note to db
+
+                       boolean resultforinsert = newnotedb.insertNewNoteTable(passcategoryid,usernotetitle.getText().toString(),usernotedetail.getText().toString(),currentnotedate);
+                        if(resultforinsert == true){
+                            Toast.makeText(newNotes.this,"Data inserted",Toast.LENGTH_LONG).show();
+                        }else{
+                            Toast.makeText(newNotes.this,"Data not inserted",Toast.LENGTH_LONG).show();
+                        }
+                        //navigate to note list
+                        Intent mIntent = new Intent(newNotes.this, noteList.class);
+                        mIntent.putExtra("categoryidfromnewnote", passcategoryid);
+                        startActivity(mIntent);
                     }
                 });
         AlertDialog alert = builder.create();

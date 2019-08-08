@@ -6,6 +6,9 @@
 
     <TextView
         android:id="@+id/note_title"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@android:color/black"
@@ -14,6 +17,8 @@
 
     <TextView
         android:id="@+id/note_date"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@android:color/black"
@@ -24,6 +29,8 @@
     <TextView
         android:id="@+id/note_location"
         android:layout_width="match_parent"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
         android:layout_height="wrap_content"
         android:background="@android:color/black"
         android:textColor="@color/colorPrimary"

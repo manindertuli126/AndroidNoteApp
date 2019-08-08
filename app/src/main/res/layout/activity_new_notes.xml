@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/background_dark"
+    android:background="#181818"
     android:orientation="vertical"
     tools:context=".newNotes">
 
@@ -16,7 +16,7 @@
         android:layout_marginTop="15dp"
         android:gravity="center"
         android:text="Note Category"
-        android:textColor="@color/colorPrimary"
+        android:textColor="@android:color/background_light"
         android:textSize="24sp" />
 
     <EditText
@@ -30,7 +30,7 @@
         android:inputType="textPersonName"
         android:paddingStart="5dp"
         android:paddingTop="5dp"
-        android:textColor="@color/colorPrimary"
+        android:textColor="@android:color/holo_blue_dark"
         android:textSize="24sp" />
 
     <TextView
@@ -41,7 +41,7 @@
         android:layout_marginTop="15dp"
         android:gravity="center"
         android:text="Note Title"
-        android:textColor="@color/colorPrimary"
+        android:textColor="@android:color/background_light"
         android:textSize="24sp" />
 
     <EditText
@@ -55,7 +55,7 @@
         android:inputType="textPersonName"
         android:paddingStart="5dp"
         android:paddingTop="5dp"
-        android:textColor="@color/colorPrimary"
+        android:textColor="@android:color/holo_blue_dark"
         android:textSize="24sp" />
 
     <TextView
@@ -66,7 +66,7 @@
         android:layout_marginTop="20dp"
         android:gravity="center"
         android:text="Note Detail"
-        android:textColor="@color/colorPrimary"
+        android:textColor="@android:color/background_light"
         android:textSize="24sp" />
 
     <EditText
@@ -82,5 +82,5 @@
         android:inputType="textMultiLine"
         android:paddingStart="5dp"
         android:paddingTop="5dp"
-        android:textColor="@color/colorPrimary" />
+        android:textColor="@android:color/holo_blue_dark" />
 </LinearLayout>

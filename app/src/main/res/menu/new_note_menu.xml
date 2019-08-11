@@ -5,6 +5,11 @@
     tools:context="com.example.rashish.myapplication.MainActivity">
 
     <item
+        android:id="@+id/image_new_note"
+        android:title="Attach"
+        app:showAsAction="always" />
+
+    <item
         android:id="@+id/save_new_note"
         android:title="Save"
         app:showAsAction="always" />

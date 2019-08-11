@@ -1,50 +1,75 @@
 package com.example.notesapp;
 
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
+import android.support.annotation.NonNull;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.TextView;
 
-import java.util.ArrayList;
+import java.util.List;
 
-public class customCategoryConfig extends BaseAdapter {
-    private Context mContext;
-    public static ArrayList<String> categoryArrayList = new ArrayList<String>();
+public class customCategoryConfig extends RecyclerView.Adapter<customCategoryConfig.Myviewholder> {
+    private List<String> Categoryname;
+    private Context mcontext;
+    database notedb1;
+    int postion;
 
     // Constructor
-    public customCategoryConfig(Context c) {
-        mContext = c;
+    public customCategoryConfig(List<String> MainCategory) {
+        Categoryname = MainCategory;
+    }
+
+    @NonNull
+    @Override
+    public customCategoryConfig.Myviewholder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
+        View itemView = LayoutInflater.from(viewGroup.getContext())
+                .inflate(R.layout.custom_category, viewGroup, false);
+        mcontext = viewGroup.getContext();
+        return new Myviewholder(itemView);
     }
 
     @Override
-    public int getCount() {
-        return categoryArrayList.size();
+    public void onBindViewHolder(@NonNull customCategoryConfig.Myviewholder myviewholder, final int i) {
+        myviewholder.cat.setText(Categoryname.get(i));
+        notedb1 = new database(mcontext);
+        myviewholder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //create db and tables
+                Cursor getDefaultcategory = notedb1.selectNoteListTableWhere(""+(i+1));
+                Log.i("trueOrfalse",""+getDefaultcategory.getCount());
+                if (getDefaultcategory.getCount() == 0) {
+                    Intent mIntent = new Intent(mcontext, newNotes.class);
+                    mIntent.putExtra("passcategoryid", "");
+                    mIntent.putExtra("passcategoryid", ""+(i+1));
+                    mcontext.startActivity(mIntent);
+                } else {
+                    Intent mIntent = new Intent(mcontext, noteList.class);
+                    mIntent.putExtra("passcategoryid", "");
+                    mIntent.putExtra("passcategoryid", ""+(i+1));
+                    mcontext.startActivity(mIntent);
+                }
+            }
+        });
     }
 
     @Override
-    public Object getItem(int position) {
-        return categoryArrayList.get(position);
+    public int getItemCount() {
+        return Categoryname.size();
     }
 
-    @Override
-    public long getItemId(int position) {
-        return position;
-    }
+    public class Myviewholder extends RecyclerView.ViewHolder
+    {
+        public TextView cat;
 
-    @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-        if (convertView == null) {
-            convertView = LayoutInflater.from(mContext).
-                    inflate(R.layout.custom_category,parent, false);
+        public Myviewholder(  View itemView) {
+            super(itemView);
+            cat=(TextView) itemView.findViewById(R.id.categoryName);
         }
-        TextView name = convertView.findViewById(R.id.categoryName);
-
-        name.setText(categoryArrayList.get(position).toString());
-        return convertView;
     }
 }

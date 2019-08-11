@@ -6,7 +6,6 @@
         <item name="colorPrimary">@android:color/holo_blue_dark</item>
         <item name="colorPrimaryDark">@android:color/holo_blue_dark</item>
         <item name="colorAccent">#181818</item>
-        <item name="android:actionMenuTextColor">#181818</item>
     </style>
 
 </resources>

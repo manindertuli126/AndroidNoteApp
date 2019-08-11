@@ -6,34 +6,41 @@
 
     <TextView
         android:id="@+id/note_title"
-        android:layout_marginTop="10dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
+        android:padding="6dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@android:color/black"
-        android:textColor="@color/colorPrimary"
-        android:text="TextView" />
+        android:layout_marginLeft="6dp"
+        android:layout_marginTop="5dp"
+        android:textSize="20dp"
+        android:layout_marginRight="6dp"
+        android:background="@android:color/holo_blue_dark"
+        android:text="TextView"
+        android:textColor="@android:color/background_light" />
 
     <TextView
         android:id="@+id/note_date"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
+        android:layout_marginLeft="6dp"
+        android:layout_marginRight="6dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@android:color/black"
-        android:textColor="@color/colorPrimary"
+        android:textSize="15dp"
+        android:background="@android:color/holo_blue_dark"
+        android:textColor="@android:color/background_light"
         android:gravity="right"
+        android:padding="8dp"
         android:text="TextView" />
 
     <TextView
         android:id="@+id/note_location"
+        android:padding="8dp"
         android:layout_width="match_parent"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
+        android:layout_marginLeft="6dp"
+        android:layout_marginRight="6dp"
         android:layout_height="wrap_content"
-        android:background="@android:color/black"
-        android:textColor="@color/colorPrimary"
+        android:background="@android:color/holo_blue_dark"
+        android:textColor="@android:color/background_light"
         android:gravity="right"
+        android:textSize="15dp"
         android:text="TextView" />
+
 </LinearLayout>

@@ -6,13 +6,10 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
-import android.graphics.Bitmap;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationManager;
-import android.net.Uri;
-import android.provider.MediaStore;
 import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
@@ -31,31 +28,23 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
-public class newNotes extends AppCompatActivity {
+public class updateNote extends AppCompatActivity {
 
-    database newnotedb;
-    String newNotecategoryid = "";
-    String currentnotedate = "";
+    database updatenotedb;
+    String Notecategoryid = "";
+    String Noteid = "";
     private EditText usernotetitle;
     private EditText usernotedetail;
     private EditText usernotecategory;
+    String currentnotedate = "";
     private static final int REQUEST_LOCATION = 1;
     LocationManager locationManager;
     String fullAddress;
-    private static int RESULT_LOAD_IMG = 1;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_new_notes);
-
-        Intent intent = getIntent();
-        newNotecategoryid = intent.getStringExtra("passcategoryid");
-
-        usernotecategory = findViewById(R.id.enter_category);
-        usernotetitle = findViewById(R.id.enter_title);
-        usernotedetail = findViewById(R.id.enter_detail);
+        setContentView(R.layout.activity_update_note);
 
         Calendar c = Calendar.getInstance();
         SimpleDateFormat df = new SimpleDateFormat("dd-MMM-YYYY hh:mm aaa");
@@ -70,9 +59,32 @@ public class newNotes extends AppCompatActivity {
             getLocation();
         }
 
-        newnotedb = new database(this);
-        if (newNotecategoryid != "") {
-            Cursor catresult = newnotedb.selectCategoryTableWhere(newNotecategoryid);
+        getSupportActionBar().setTitle("Update Note");
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        usernotecategory = findViewById(R.id.update_category);
+        usernotetitle = findViewById(R.id.update_title);
+        usernotedetail = findViewById(R.id.update_detail);
+
+        Intent intent = getIntent();
+        Notecategoryid = intent.getStringExtra("passcategoryid");
+        Noteid = intent.getStringExtra("passnoteid");
+
+        updatenotedb = new database(this);
+        if(Notecategoryid != ""){
+            Cursor catresult = updatenotedb.selectallNoteListTableWhere(Noteid);
+            if (catresult.getCount() == 0) {
+                Log.i("**DB**", "FAIL");
+            } else {
+                while (catresult.moveToNext()) {
+                    usernotetitle.setText(catresult.getString(0));
+                    usernotedetail.setText(catresult.getString(1));
+                }
+            }
+        }
+        if(Notecategoryid != ""){
+            Cursor catresult = updatenotedb.selectCategoryTableWhere(Notecategoryid);
             if (catresult.getCount() == 0) {
                 Log.i("**DB**", "FAIL");
             } else {
@@ -81,10 +93,6 @@ public class newNotes extends AppCompatActivity {
                 }
             }
         }
-
-        getSupportActionBar().setTitle("New Note");
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     @Override
@@ -95,16 +103,13 @@ public class newNotes extends AppCompatActivity {
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onOptionsItemSelected(MenuItem item){
         int id = item.getItemId();
-        switch (item.getItemId()) {
+        switch(item.getItemId()){
             case R.id.save_new_note:
                 successAlert();
                 break;
-            case R.id.image_new_note:
-                Intent galleryIntent = new Intent(Intent.ACTION_PICK,android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                startActivityForResult(galleryIntent, RESULT_LOAD_IMG);
-                break;
+
             case android.R.id.home:
                 this.finish();
                 break;
@@ -112,13 +117,33 @@ public class newNotes extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    public void successAlert() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("SUCCESS !!");
+        builder.setMessage("Note Updated successfully ..")
+                .setCancelable(false)
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        //insert note to db
+                        updatenotedb.updatelistnoteTable(Noteid,Notecategoryid,usernotetitle.getText().toString(),usernotedetail.getText().toString(),currentnotedate,fullAddress);
+                         //navigate to note list
+                        Intent mIntent = new Intent(updateNote.this, noteList.class);
+                        mIntent.putExtra("passcategoryid", "");
+                        mIntent.putExtra("passcategoryid", Notecategoryid);
+                        startActivity(mIntent);
+                    }
+                });
+        AlertDialog alert = builder.create();
+        alert.show();
+    }
+
     private void getLocation() {
         DecimalFormat df = new DecimalFormat("#.######");
-        if (ActivityCompat.checkSelfPermission(newNotes.this, Manifest.permission.ACCESS_FINE_LOCATION)
+        if (ActivityCompat.checkSelfPermission(updateNote.this, Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission
-                (newNotes.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                (updateNote.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
 
-            ActivityCompat.requestPermissions(newNotes.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_LOCATION);
+            ActivityCompat.requestPermissions(updateNote.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_LOCATION);
 
         } else {
             Location location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
@@ -161,33 +186,6 @@ public class newNotes extends AppCompatActivity {
                     }
                 });
         final AlertDialog alert = builder.create();
-        alert.show();
-    }
-
-
-    public void successAlert() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("SUCCESS !!");
-        builder.setMessage("Note saved successfully ..")
-                .setCancelable(false)
-                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        //insert note to db
-                        boolean resultforinsert = newnotedb.insertNewNoteTable(newNotecategoryid, usernotetitle.getText().toString(), usernotedetail.getText().toString(), currentnotedate, fullAddress);
-
-                        if (resultforinsert == true) {
-                            Toast.makeText(newNotes.this, "Data inserted", Toast.LENGTH_LONG).show();
-                        } else {
-                            Toast.makeText(newNotes.this, "Data not inserted", Toast.LENGTH_LONG).show();
-                        }
-                        //navigate to note list
-                        Intent mIntent = new Intent(newNotes.this, noteList.class);
-                        mIntent.putExtra("passcategoryid", "");
-                        mIntent.putExtra("passcategoryid", newNotecategoryid);
-                        startActivity(mIntent);
-                    }
-                });
-        AlertDialog alert = builder.create();
         alert.show();
     }
 

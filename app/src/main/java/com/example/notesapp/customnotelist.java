@@ -45,9 +45,9 @@ public class customnotelist extends BaseAdapter {
         TextView notedate = convertView.findViewById(R.id.note_date);
         TextView notelocation = convertView.findViewById(R.id.note_location);
 
-        notetitle.setText(notetitleArrayList.get(position).toString());
-        notedate.setText(notedateArrayList.get(position).toString());
-//        notelocation.setText(notelocationArrayList.get(position).toString());
+        notetitle.setText(notetitleArrayList.get(position));
+        notedate.setText(notedateArrayList.get(position));
+        notelocation.setText(notelocationArrayList.get(position));
         return convertView;
     }
 }

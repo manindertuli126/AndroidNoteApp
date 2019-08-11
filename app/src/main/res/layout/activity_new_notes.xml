@@ -4,83 +4,108 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#181818"
+    android:background="@drawable/notebc"
     android:orientation="vertical"
     tools:context=".newNotes">
 
-    <TextView
-        android:id="@+id/notecategory"
-        android:layout_width="182dp"
-        android:layout_height="48dp"
-        android:layout_marginLeft="15dp"
-        android:layout_marginTop="15dp"
-        android:gravity="center"
-        android:text="Note Category"
-        android:textColor="@android:color/background_light"
-        android:textSize="24sp" />
-
-    <EditText
-        android:id="@+id/enter_category"
-        android:layout_width="364dp"
-        android:layout_height="48dp"
-        android:layout_marginLeft="20dp"
-        android:background="@drawable/border"
-        android:ems="10"
-        android:hint="Enter Note Title"
-        android:inputType="textPersonName"
-        android:paddingStart="5dp"
-        android:paddingTop="5dp"
-        android:textColor="@android:color/holo_blue_dark"
-        android:textSize="24sp" />
-
-    <TextView
-        android:id="@+id/notetitle"
-        android:layout_width="127dp"
-        android:layout_height="48dp"
-        android:layout_marginLeft="15dp"
-        android:layout_marginTop="15dp"
-        android:gravity="center"
-        android:text="Note Title"
-        android:textColor="@android:color/background_light"
-        android:textSize="24sp" />
-
-    <EditText
-        android:id="@+id/enter_title"
-        android:layout_width="364dp"
-        android:layout_height="48dp"
-        android:layout_marginLeft="20dp"
-        android:background="@drawable/border"
-        android:ems="10"
-        android:hint="Enter Note Title"
-        android:inputType="textPersonName"
-        android:paddingStart="5dp"
-        android:paddingTop="5dp"
-        android:textColor="@android:color/holo_blue_dark"
-        android:textSize="24sp" />
-
-    <TextView
-        android:id="@+id/notedetail"
-        android:layout_width="145dp"
-        android:layout_height="48dp"
-        android:layout_marginLeft="15dp"
-        android:layout_marginTop="20dp"
-        android:gravity="center"
-        android:text="Note Detail"
-        android:textColor="@android:color/background_light"
-        android:textSize="24sp" />
-
-    <EditText
-        android:id="@+id/enter_detail"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="458dp"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
-        android:background="@drawable/border"
-        android:ems="10"
-        android:gravity="start|top"
-        android:hint="Enter Note Detail"
-        android:inputType="textMultiLine"
-        android:paddingStart="5dp"
-        android:paddingTop="5dp"
-        android:textColor="@android:color/holo_blue_dark" />
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+
+            <TextView
+                android:id="@+id/notecategory"
+                android:layout_width="182dp"
+                android:layout_height="48dp"
+                android:layout_marginLeft="15dp"
+                android:layout_marginTop="10dp"
+                android:gravity="center"
+                android:text="Note Category"
+                android:textColor="@android:color/background_light"
+                android:textSize="24sp" />
+
+            <EditText
+                android:id="@+id/enter_category"
+                android:layout_width="364dp"
+                android:layout_height="48dp"
+                android:layout_marginLeft="20dp"
+                android:background="@drawable/border"
+                android:ems="10"
+                android:hint="Enter Note Title"
+                android:inputType="textPersonName"
+                android:paddingStart="5dp"
+                android:paddingTop="5dp"
+                android:textColor="@android:color/holo_blue_dark"
+                android:textSize="24sp" />
+
+            <TextView
+                android:id="@+id/notetitle"
+                android:layout_width="127dp"
+                android:layout_height="48dp"
+                android:layout_marginLeft="15dp"
+                android:layout_marginTop="15dp"
+                android:gravity="center"
+                android:text="Note Title"
+                android:textColor="@android:color/background_light"
+                android:textSize="24sp" />
+
+            <EditText
+                android:id="@+id/enter_title"
+                android:layout_width="364dp"
+                android:layout_height="48dp"
+                android:layout_marginLeft="20dp"
+                android:background="@drawable/border"
+                android:ems="10"
+                android:hint="Enter Note Title"
+                android:inputType="textPersonName"
+                android:paddingStart="5dp"
+                android:paddingTop="5dp"
+                android:textColor="@android:color/holo_blue_dark"
+                android:textSize="24sp" />
+
+            <TextView
+                android:id="@+id/notedetail"
+                android:layout_width="145dp"
+                android:layout_height="48dp"
+                android:layout_marginLeft="15dp"
+                android:layout_marginTop="20dp"
+                android:gravity="center"
+                android:text="Note Detail"
+                android:textColor="@android:color/background_light"
+                android:textSize="24sp" />
+
+            <EditText
+                android:id="@+id/enter_detail"
+                android:layout_width="match_parent"
+                android:layout_height="420dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:background="@drawable/border"
+                android:ems="10"
+                android:gravity="start|top"
+                android:hint="Enter Note Detail"
+                android:inputType="textMultiLine"
+                android:paddingStart="5dp"
+                android:paddingTop="5dp"
+                android:textColor="@android:color/holo_blue_dark" />
+
+            <!--<android.support.v7.widget.RecyclerView-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="120dp" >-->
+
+                <ImageView
+                    android:id="@+id/imageView"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:layout_marginTop="8dp"
+                    tools:srcCompat="@tools:sample/avatars" />
+            <!--</android.support.v7.widget.RecyclerView>-->
+
+        </LinearLayout>
+    </ScrollView>
+
 </LinearLayout>

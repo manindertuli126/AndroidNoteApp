@@ -21,6 +21,9 @@ public class database extends SQLiteOpenHelper {
     public static final String NOTE_COL4 = "notedate";
     public static final String NOTE_COL5 = "notelocation";
 
+    public static final String NOTE_IMAGE_COL1 = "noteid";
+    public static final String NOTE_IMAGE_COL2 = "noteimage";
+
     public database(Context context) {
         super(context, DATABASE_NAME, null, 1);
 //        SQLiteDatabase db = this.getWritableDatabase();
@@ -30,13 +33,26 @@ public class database extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         db.execSQL("create table "+TABLE_NAME1+" (id INTEGER PRIMARY KEY AUTOINCREMENT,categoryname TEXT)");
         db.execSQL("create table "+TABLE_NAME2+" (id INTEGER PRIMARY KEY AUTOINCREMENT,categoryid INTEGER,notetitle TEXT, notedetail TEXT, notedate TEXT, notelocation TEXT)");
-        db.execSQL("create table "+TABLE_NAME3+" (id INTEGER PRIMARY KEY AUTOINCREMENT,noteid INTEGER)");
+        db.execSQL("create table "+TABLE_NAME3+" (noteid INTEGER, noteimage BLOB)");
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 //        db.execSQL(SQL_DELETE_ENTRIES);
 //        onCreate(db);
+    }
+
+    public boolean insertImage(String imagelocation, String noteid){
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        // Create a new map of values, where column names are the keys
+        ContentValues values = new ContentValues();
+        values.put(NOTE_IMAGE_COL1, noteid);
+        values.put(NOTE_IMAGE_COL2, imagelocation);
+
+        // Insert the new row, returning the primary key value of the new row
+        long newRowId = db.insert(TABLE_NAME3, null, values);
+        if (newRowId == -1){return false;}else{return true;}
     }
 
     public boolean insertCategoryTable(String categoryname){
@@ -142,9 +158,19 @@ public class database extends SQLiteOpenHelper {
         return res;
     }
 
-    public Integer deleteFromCategoryTable(String id){
+    public Integer deleteFromCategoryTable(String catid){
         SQLiteDatabase db = this.getWritableDatabase();
-        return db.delete(TABLE_NAME1, "id = ?", new String [] {id});
+        return db.delete(TABLE_NAME1, "id = ?", new String [] {catid});
+    }
+
+    public Integer deleteFromNoteListTable(String noteid){
+        SQLiteDatabase db = this.getWritableDatabase();
+        return db.delete(TABLE_NAME2, "id = ?", new String [] {noteid});
+    }
+
+    public Integer deleteAllNoteListTable(String catid){
+        SQLiteDatabase db = this.getWritableDatabase();
+        return db.delete(TABLE_NAME2, "categoryid = ?", new String [] {catid});
     }
 
     public Boolean updatelistnoteTable(String noteid, String categoryid, String title,String detail,String date,String location){

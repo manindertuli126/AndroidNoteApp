@@ -1,9 +1,12 @@
 package com.example.notesapp;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -11,6 +14,10 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.SearchView;
+import android.widget.Toast;
+
+import java.util.List;
 
 public class noteList extends AppCompatActivity {
 
@@ -19,6 +26,7 @@ public class noteList extends AppCompatActivity {
     String notelistcategoryid = "";
     Button sorttitle;
     Button sortdate;
+    SearchView searchnote;
     int DescAsc = 1;
     int DescAscDate = 1;
     customnotelist noteAdapter = new customnotelist(this);
@@ -34,6 +42,7 @@ public class noteList extends AppCompatActivity {
 
         sorttitle = (Button)findViewById(R.id.title);
         sortdate = (Button)findViewById(R.id.date);
+//        searchnote = (SearchView)findViewById(R.id.search_note);
 
         //set title
         getSupportActionBar().setTitle("Notes");
@@ -131,7 +140,28 @@ public class noteList extends AppCompatActivity {
                 noteAdapter.notifyDataSetChanged();
             }
         });
-    }
+//        searchnote.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+//            @Override
+//            public boolean onQueryTextSubmit(String query) {
+//                searchContact(query);
+//                return false;
+//            }
+//
+//            @Override
+//            public boolean onQueryTextChange(String newText) {
+//                if(TextUtils.isEmpty(newText))
+//                {
+//                    //contacts.clear();
+//                    getdata();
+//                    // Toast.makeText(getApplicationContext(),"Hello Javatpoint",Toast.LENGTH_SHORT).show();
+//                }
+//                else {
+//                    searchContact(newText);
+//                }
+//                return false;
+//            }
+//        });
+        }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -156,7 +186,66 @@ public class noteList extends AppCompatActivity {
                 newnoteIntent.putExtra("passcategoryid", notelistcategoryid);
                 startActivity(newnoteIntent);
                 break;
+
+            case R.id.delete_note_list:
+                deleteCatNoteAlert();
+                break;
         }
         return super.onOptionsItemSelected(item);
     }
+
+    public void deleteCatNoteAlert() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("DELETED !!");
+        builder.setMessage("Delete 'CATEGORY' or 'ALL NOTES' ?")
+                .setCancelable(false)
+                .setPositiveButton("Notes", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        notelistdb.deleteAllNoteListTable(notelistcategoryid);
+                        //navigate to note list
+                        Intent deletenoteIntent = new Intent(noteList.this, MainActivity.class);
+                        deletenoteIntent.putExtra("passcategoryid", "");
+                        startActivity(deletenoteIntent);
+                    }
+                }).setNegativeButton("Category", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                notelistdb.deleteAllNoteListTable(notelistcategoryid);
+                notelistdb.deleteFromCategoryTable(notelistcategoryid);
+                //navigate to note list
+                Intent deleteCategoryIntent = new Intent(noteList.this, MainActivity.class);
+                deleteCategoryIntent.putExtra("passcategoryid", "");
+                startActivity(deleteCategoryIntent);
+            }
+        }).setNeutralButton("Cancel", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                dialog.cancel();
+            }
+        });
+        AlertDialog alert = builder.create();
+        alert.show();
+    }
+
+//    private void searchContact(String keyword) {
+//        List<noteList> contacts = notelistdb.search(keyword);
+//        if (contacts != null) {
+//            noteAdapter = new customnotelist(this);
+//            notelist = findViewById(R.id.note_list);
+//            notelist.setAdapter(noteAdapter);
+//            notelist.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//                @Override
+//                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+//                    Intent mIntent = new Intent(noteList.this, updateNote.class);
+//                    mIntent.putExtra("passnoteid", "");
+//                    mIntent.putExtra("passnoteid", ""+(position+1));
+//                    mIntent.putExtra("passcategoryid", "");
+//                    mIntent.putExtra("passcategoryid", notelistcategoryid);
+//                    startActivity(mIntent);
+//                }
+//            });
+//            noteAdapter.notifyDataSetChanged();
+//        }else
+//        {
+//            Toast.makeText(getApplicationContext(),"No Notes Found",Toast.LENGTH_SHORT).show();
+//        }
+//    }
 }

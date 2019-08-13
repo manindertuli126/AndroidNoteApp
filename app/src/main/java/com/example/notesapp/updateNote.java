@@ -98,7 +98,7 @@ public class updateNote extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.new_note_menu, menu);
+        getMenuInflater().inflate(R.menu.update_note_menu, menu);
         return true;
     }
 
@@ -106,8 +106,12 @@ public class updateNote extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item){
         int id = item.getItemId();
         switch(item.getItemId()){
-            case R.id.save_new_note:
+            case R.id.update_note:
                 successAlert();
+                break;
+
+            case R.id.delete_note:
+                deleteAlert();
                 break;
 
             case android.R.id.home:
@@ -127,6 +131,26 @@ public class updateNote extends AppCompatActivity {
                         //insert note to db
                         updatenotedb.updatelistnoteTable(Noteid,Notecategoryid,usernotetitle.getText().toString(),usernotedetail.getText().toString(),currentnotedate,fullAddress);
                          //navigate to note list
+                        Intent mIntent = new Intent(updateNote.this, noteList.class);
+                        mIntent.putExtra("passcategoryid", "");
+                        mIntent.putExtra("passcategoryid", Notecategoryid);
+                        startActivity(mIntent);
+                    }
+                });
+        AlertDialog alert = builder.create();
+        alert.show();
+    }
+
+    public void deleteAlert() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("DELETED !!");
+        builder.setMessage("Note deleted successfully ..")
+                .setCancelable(false)
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        //insert note to db
+                        updatenotedb.deleteFromNoteListTable(Noteid);
+                        //navigate to note list
                         Intent mIntent = new Intent(updateNote.this, noteList.class);
                         mIntent.putExtra("passcategoryid", "");
                         mIntent.putExtra("passcategoryid", Notecategoryid);

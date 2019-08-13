@@ -5,14 +5,14 @@
     tools:context="com.example.rashish.myapplication.MainActivity">
 
     <item
-        android:id="@+id/image_new_note"
-        android:icon="@mipmap/ic_attach"
-        android:title="Attach"
+        android:id="@+id/delete_note"
+        android:icon="@android:drawable/ic_menu_delete"
+        android:title="delete"
         app:showAsAction="always" />
 
     <item
-        android:id="@+id/save_new_note"
+        android:id="@+id/update_note"
+        android:title="update"
         android:icon="@android:drawable/ic_menu_save"
-        android:title="Save"
         app:showAsAction="always" />
 </menu>

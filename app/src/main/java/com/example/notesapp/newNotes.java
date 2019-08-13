@@ -7,23 +7,31 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationManager;
+import android.media.MediaScannerConnection;
 import android.net.Uri;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Base64;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
@@ -34,6 +42,7 @@ import java.util.Locale;
 public class newNotes extends AppCompatActivity {
 
     database newnotedb;
+    private static final String IMAGE_DIRECTORY = "/demonuts";
     String newNotecategoryid = "";
     String currentnotedate = "";
     private EditText usernotetitle;
@@ -42,6 +51,7 @@ public class newNotes extends AppCompatActivity {
     private static final int REQUEST_LOCATION = 1;
     LocationManager locationManager;
     String fullAddress;
+    ImageView imview;
     private static int RESULT_LOAD_IMG = 1;
 
 
@@ -56,6 +66,7 @@ public class newNotes extends AppCompatActivity {
         usernotecategory = findViewById(R.id.enter_category);
         usernotetitle = findViewById(R.id.enter_title);
         usernotedetail = findViewById(R.id.enter_detail);
+        imview = (ImageView)findViewById(R.id.gallery);
 
         Calendar c = Calendar.getInstance();
         SimpleDateFormat df = new SimpleDateFormat("dd-MMM-YYYY hh:mm aaa");
@@ -104,12 +115,31 @@ public class newNotes extends AppCompatActivity {
             case R.id.image_new_note:
                 Intent galleryIntent = new Intent(Intent.ACTION_PICK,android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                 startActivityForResult(galleryIntent, RESULT_LOAD_IMG);
+//                    Intent galleryIntent = new Intent();
+//                    galleryIntent.setType("Image/*");
+//                    galleryIntent.setAction(Intent.ACTION_GET_CONTENT);
+//                    startActivityForResult(Intent.createChooser(galleryIntent,"Select picture"),RESULT_LOAD_IMG);
                 break;
             case android.R.id.home:
                 this.finish();
                 break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data){
+        super.onActivityResult(requestCode,resultCode,data);
+        if (data != null){
+            Uri imageuri = data.getData();
+            try{
+                Log.e("Imageselected", "imagee");
+                Bitmap bit = MediaStore.Images.Media.getBitmap(getContentResolver(),imageuri);
+                imview.setImageBitmap(bit);
+            }catch(IOException e){
+            e.printStackTrace();
+            }
+        }
     }
 
     private void getLocation() {
@@ -164,7 +194,6 @@ public class newNotes extends AppCompatActivity {
         alert.show();
     }
 
-
     public void successAlert() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("SUCCESS !!");
@@ -172,8 +201,26 @@ public class newNotes extends AppCompatActivity {
                 .setCancelable(false)
                 .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
+
+//                        Bitmap bitmap = ((BitmapDrawable) imview.getDrawable()).getBitmap();
+//                        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+//                        bitmap = Bitmap.createScaledBitmap(bitmap,(int)(bitmap.getWidth()*0.8), (int)(bitmap.getHeight()*0.8), true);
+//                        bitmap.compress(Bitmap.CompressFormat.JPEG, 40, stream);
+//                        byte[] byte_arr = stream.toByteArray();
+//                       String img_str = Base64.encodeToString(byte_arr, Base64.DEFAULT);
+
                         //insert note to db
                         boolean resultforinsert = newnotedb.insertNewNoteTable(newNotecategoryid, usernotetitle.getText().toString(), usernotedetail.getText().toString(), currentnotedate, fullAddress);
+
+//                        boolean insertimage = newnotedb.insertImage(img_str,"1");
+//                        Cursor catresult = newnotedb.selectCategoryTableWhere(newNotecategoryid);
+//                        if (catresult.getCount() == 0) {
+//                            Log.i("**DB**", "FAIL");
+//                        } else {
+//                            while (catresult.moveToNext()) {
+//                                usernotecategory.setText(catresult.getString(0));
+//                            }
+//                        }
 
                         if (resultforinsert == true) {
                             Toast.makeText(newNotes.this, "Data inserted", Toast.LENGTH_LONG).show();
@@ -190,6 +237,38 @@ public class newNotes extends AppCompatActivity {
         AlertDialog alert = builder.create();
         alert.show();
     }
+
+//    public String saveImage(Bitmap myBitmap) {
+//        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+//        myBitmap.createScaledBitmap(myBitmap,(int)(myBitmap.getWidth()*0.8), (int)(myBitmap.getHeight()*0.8), true);
+//
+//        myBitmap.compress(Bitmap.CompressFormat.JPEG, 40, bytes);
+//        File wallpaperDirectory = new File(
+//                Environment.getExternalStorageDirectory() + IMAGE_DIRECTORY);
+//        // have the object build the directory structure, if needed.
+//        if (!wallpaperDirectory.exists()) {
+//            wallpaperDirectory.mkdirs();
+//        }
+//
+//        try {
+//            File f = new File(wallpaperDirectory, Calendar.getInstance()
+//                    .getTimeInMillis() + ".jpg");
+//            f.createNewFile();
+//            FileOutputStream fo = new FileOutputStream(f);
+//            fo.write(bytes.toByteArray());
+//            MediaScannerConnection.scanFile(this,
+//                    new String[]{f.getPath()},
+//                    new String[]{"image/jpeg"}, null);
+//            fo.close();
+//            Log.d("TAG", "File Saved::--->" + f.getAbsolutePath());
+//
+//            return f.getAbsolutePath();
+//        } catch (IOException e1) {
+//            e1.printStackTrace();
+//        }
+//        return "";
+//    }
+
 
     private void setAddress(Double latitude, Double longitude) {
 

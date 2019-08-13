@@ -38,13 +38,13 @@
                 android:hint="Enter Note Title"
                 android:inputType="textPersonName"
                 android:paddingStart="5dp"
-                android:paddingTop="5dp"
                 android:textColor="@android:color/holo_blue_dark"
                 android:textSize="24sp" />
 
             <TextView
                 android:id="@+id/notetitle"
                 android:layout_width="127dp"
+                android:maxLength="12"
                 android:layout_height="48dp"
                 android:layout_marginLeft="15dp"
                 android:layout_marginTop="15dp"
@@ -63,7 +63,6 @@
                 android:hint="Enter Note Title"
                 android:inputType="textPersonName"
                 android:paddingStart="5dp"
-                android:paddingTop="5dp"
                 android:textColor="@android:color/holo_blue_dark"
                 android:textSize="24sp" />
 
@@ -89,7 +88,7 @@
                 android:gravity="start|top"
                 android:hint="Enter Note Detail"
                 android:inputType="textMultiLine"
-                android:paddingStart="5dp"
+                android:paddingStart="8dp"
                 android:paddingTop="5dp"
                 android:textColor="@android:color/holo_blue_dark" />
 
@@ -98,11 +97,11 @@
                 <!--android:layout_height="120dp" >-->
 
                 <ImageView
-                    android:id="@+id/imageView"
+                    android:id="@+id/gallery"
                     android:layout_width="100dp"
                     android:layout_height="100dp"
                     android:layout_marginTop="8dp"
-                    tools:srcCompat="@tools:sample/avatars" />
+                    android:layout_marginStart="8dp" />
             <!--</android.support.v7.widget.RecyclerView>-->
 
         </LinearLayout>

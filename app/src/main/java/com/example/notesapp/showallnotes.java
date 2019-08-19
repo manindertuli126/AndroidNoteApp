@@ -3,12 +3,10 @@ package com.example.notesapp;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
-import android.graphics.Bitmap;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Base64;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -17,11 +15,8 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.SearchView;
-import android.widget.Toast;
 
-import java.io.ByteArrayOutputStream;
-
-public class noteList extends AppCompatActivity {
+public class showallnotes extends AppCompatActivity {
 
     private ListView notelist;
     database notelistdb;
@@ -31,32 +26,32 @@ public class noteList extends AppCompatActivity {
     SearchView searchnote;
     int DescAsc = 1;
     int DescAscDate = 1;
-    customnotelist noteAdapter = new customnotelist(this);
+    customallnotes noteAdapter = new customallnotes(this);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_note_list);
+        setContentView(R.layout.activity_showallnotes);
 
         Intent intent = getIntent();
         notelistcategoryid = intent.getStringExtra("passcategoryid");
         System.out.println(notelistcategoryid);
 
-        sorttitle = (Button)findViewById(R.id.title);
-        sortdate = (Button)findViewById(R.id.date);
-        searchnote = (SearchView)findViewById(R.id.search_List);
+        sorttitle = (Button)findViewById(R.id.alltitle);
+        sortdate = (Button)findViewById(R.id.alldate);
+        searchnote = (SearchView)findViewById(R.id.allsearch_List);
 
         getSupportActionBar().setTitle("Notes");
         notelistdb = new database(this);
         orignalList();
 
         //create category grid view
-        notelist = findViewById(R.id.note_list);
+        notelist = findViewById(R.id.allnote_list);
         notelist.setAdapter(noteAdapter);
         notelist.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent mIntent = new Intent(noteList.this, updateNote.class);
+                Intent mIntent = new Intent(showallnotes.this, updateNote.class);
                 mIntent.putExtra("passnoteid", "");
                 mIntent.putExtra("passnoteid", ""+(position+1));
                 mIntent.putExtra("passcategoryid", "");
@@ -65,25 +60,25 @@ public class noteList extends AppCompatActivity {
             }
         });
 
-        getSupportActionBar().setTitle("Notes List");
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setTitle("All Notes");
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         sorttitle.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Cursor notesortquery = null;
                 switch(DescAsc){
                     case 1:
-                        notesortquery = notelistdb.NoteListTableSortDesc(notelistcategoryid);
+                        notesortquery = notelistdb.NoteListTableSortDesc();
                         DescAsc =2;
                         break;
                     case 2:
-                        notesortquery = notelistdb.NoteListTableSortAsc(notelistcategoryid);
+                        notesortquery = notelistdb.NoteListTableSortAsc();
                         DescAsc =1;
                         break;
                 }
                 if (notesortquery.getCount() == 0) {
-                    Log.i("noteListDB", "FAIL");
+                    Log.i("notesortListDB", "FAIL");
                 } else {
                     customnotelist.notetitleArrayList.clear();
                     customnotelist.notedateArrayList.clear();
@@ -146,11 +141,11 @@ public class noteList extends AppCompatActivity {
                 return false;
             }
         });
-        }
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.note_list_menu, menu);
+        getMenuInflater().inflate(R.menu.show_all, menu);
         return true;
     }
 
@@ -160,49 +155,29 @@ public class noteList extends AppCompatActivity {
         switch(item.getItemId()){
 
             case android.R.id.home:
-                Intent mainIntent = new Intent(noteList.this, MainActivity.class);
-                startActivity(mainIntent);
+                finish();
                 break;
 
-            case R.id.add_new_note:
-                Intent newnoteIntent = new Intent(noteList.this, newNotes.class);
-                newnoteIntent.putExtra("passcategoryid", "");
-                newnoteIntent.putExtra("passcategoryid", notelistcategoryid);
-                startActivity(newnoteIntent);
-                break;
-
-            case R.id.delete_note_list:
-                deleteCatNoteAlert();
+            case R.id.delete_allnote_list:
+                deleteAllNoteAlert();
                 break;
         }
         return super.onOptionsItemSelected(item);
     }
 
-    public void deleteCatNoteAlert() {
+    public void deleteAllNoteAlert() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("DELETED !!");
-        builder.setMessage("Delete 'CATEGORY' or 'ALL NOTES' ?")
+        builder.setMessage("Delete 'ALL NOTES' ?")
                 .setCancelable(false)
-                .setPositiveButton("Notes", new DialogInterface.OnClickListener() {
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         notelistdb.deleteAllNoteListTable(notelistcategoryid);
-                        //navigate to note list
-                        Intent deletenoteIntent = new Intent(noteList.this, MainActivity.class);
-                        deletenoteIntent.putExtra("passcategoryid", "");
-                        startActivity(deletenoteIntent);
+                        finish();
                     }
-                }).setNegativeButton("Category", new DialogInterface.OnClickListener() {
+                }).setNegativeButton("No", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
-                notelistdb.deleteAllNoteListTable(notelistcategoryid);
-                notelistdb.deleteFromCategoryTable(notelistcategoryid);
-                //navigate to note list
-                Intent deleteCategoryIntent = new Intent(noteList.this, MainActivity.class);
-                deleteCategoryIntent.putExtra("passcategoryid", "");
-                startActivity(deleteCategoryIntent);
-            }
-        }).setNeutralButton("Cancel", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-                dialog.cancel();
+            dialog.cancel();
             }
         });
         AlertDialog alert = builder.create();
@@ -211,37 +186,38 @@ public class noteList extends AppCompatActivity {
 
     private void searchContact(String keyword) {
         Cursor notelistquery = notelistdb.searchlist(keyword);
-            if (notelistquery.getCount() == 0) {
-                customnotelist.notetitleArrayList.clear();
-                customnotelist.notedateArrayList.clear();
-                customnotelist.notelocationArrayList.clear();
-            } else {
-                customnotelist.notetitleArrayList.clear();
-                customnotelist.notedateArrayList.clear();
-                customnotelist.notelocationArrayList.clear();
-                while (notelistquery.moveToNext()) {
-                    customnotelist.notetitleArrayList.add(notelistquery.getString(2));
-                    customnotelist.notedateArrayList.add(notelistquery.getString(4));
-                    customnotelist.notelocationArrayList.add(notelistquery.getString(5));
-                }
+        if (notelistquery.getCount() == 0) {
+            customallnotes.notetitleArrayList.clear();
+            customallnotes.notedateArrayList.clear();
+            customallnotes.notelocationArrayList.clear();
+        } else {
+            customallnotes.notetitleArrayList.clear();
+            customallnotes.notedateArrayList.clear();
+            customallnotes.notelocationArrayList.clear();
+            while (notelistquery.moveToNext()) {
+                customallnotes.notetitleArrayList.add(notelistquery.getString(2));
+                customallnotes.notedateArrayList.add(notelistquery.getString(4));
+                customallnotes.notelocationArrayList.add(notelistquery.getString(5));
             }
-            noteAdapter.notifyDataSetChanged();
         }
-
-        private void orignalList(){
-            Cursor notelistquery = notelistdb.selectNoteListTableWhere(notelistcategoryid);
-            if (notelistquery.getCount() == 0) {
-                Log.i("noteListDB", "FAIL");
-            } else {
-                customnotelist.notetitleArrayList.clear();
-                customnotelist.notedateArrayList.clear();
-                customnotelist.notelocationArrayList.clear();
-                while (notelistquery.moveToNext()) {
-                    customnotelist.notetitleArrayList.add(notelistquery.getString(0));
-                    customnotelist.notedateArrayList.add(notelistquery.getString(1));
-                    customnotelist.notelocationArrayList.add(notelistquery.getString(2));
-                }
-            }
-            noteAdapter.notifyDataSetChanged();
-        }
+        noteAdapter.notifyDataSetChanged();
     }
+
+    private void orignalList(){
+        Cursor notelistquery = notelistdb.selectnotesTable();
+        if (notelistquery.getCount() == 0) {
+            Log.i("noteListDB", "FAIL");
+        } else {
+            customallnotes.notetitleArrayList.clear();
+            customallnotes.notedateArrayList.clear();
+            customallnotes.notelocationArrayList.clear();
+            while (notelistquery.moveToNext()) {
+                customallnotes.notetitleArrayList.add(notelistquery.getString(2));
+                customallnotes.notedateArrayList.add(notelistquery.getString(4));
+                customallnotes.notelocationArrayList.add(notelistquery.getString(5));
+            }
+        }
+        noteAdapter.notifyDataSetChanged();
+    }
+}
+

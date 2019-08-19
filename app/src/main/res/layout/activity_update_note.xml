@@ -92,7 +92,7 @@
                 android:textColor="@android:color/holo_blue_dark" />
 
             <ImageView
-                android:id="@+id/imageView"
+                android:id="@+id/update_image"
                 android:layout_width="100dp"
                 android:layout_height="100dp" />
 

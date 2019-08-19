@@ -51,7 +51,8 @@ public class newNotes extends AppCompatActivity {
     private static final int REQUEST_LOCATION = 1;
     LocationManager locationManager;
     String fullAddress;
-    ImageView imview;
+    ImageView imageView;
+    Bitmap imageBit;
     private static int RESULT_LOAD_IMG = 1;
 
 
@@ -66,7 +67,7 @@ public class newNotes extends AppCompatActivity {
         usernotecategory = findViewById(R.id.enter_category);
         usernotetitle = findViewById(R.id.enter_title);
         usernotedetail = findViewById(R.id.enter_detail);
-        imview = (ImageView)findViewById(R.id.gallery);
+        imageView = (ImageView)findViewById(R.id.gallery);
 
         Calendar c = Calendar.getInstance();
         SimpleDateFormat df = new SimpleDateFormat("dd-MMM-YYYY hh:mm aaa");
@@ -115,11 +116,7 @@ public class newNotes extends AppCompatActivity {
             case R.id.image_new_note:
                 Intent galleryIntent = new Intent(Intent.ACTION_PICK,android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                 startActivityForResult(galleryIntent, RESULT_LOAD_IMG);
-//                    Intent galleryIntent = new Intent();
-//                    galleryIntent.setType("Image/*");
-//                    galleryIntent.setAction(Intent.ACTION_GET_CONTENT);
-//                    startActivityForResult(Intent.createChooser(galleryIntent,"Select picture"),RESULT_LOAD_IMG);
-                break;
+                   break;
             case android.R.id.home:
                 this.finish();
                 break;
@@ -135,7 +132,8 @@ public class newNotes extends AppCompatActivity {
             try{
                 Log.e("Imageselected", "imagee");
                 Bitmap bit = MediaStore.Images.Media.getBitmap(getContentResolver(),imageuri);
-                imview.setImageBitmap(bit);
+                imageBit = bit;
+                imageView.setImageBitmap(bit);
             }catch(IOException e){
             e.printStackTrace();
             }
@@ -170,7 +168,7 @@ public class newNotes extends AppCompatActivity {
                 double longi = Double.parseDouble(df.format(location1.getLongitude()));
                 setAddress(latti, longi);
             } else {
-                Toast.makeText(this, "Unble to Trace your location", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Unable to Trace your location", Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -202,31 +200,25 @@ public class newNotes extends AppCompatActivity {
                 .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
 
-//                        Bitmap bitmap = ((BitmapDrawable) imview.getDrawable()).getBitmap();
-//                        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-//                        bitmap = Bitmap.createScaledBitmap(bitmap,(int)(bitmap.getWidth()*0.8), (int)(bitmap.getHeight()*0.8), true);
-//                        bitmap.compress(Bitmap.CompressFormat.JPEG, 40, stream);
-//                        byte[] byte_arr = stream.toByteArray();
-//                       String img_str = Base64.encodeToString(byte_arr, Base64.DEFAULT);
-
                         //insert note to db
-                        boolean resultforinsert = newnotedb.insertNewNoteTable(newNotecategoryid, usernotetitle.getText().toString(), usernotedetail.getText().toString(), currentnotedate, fullAddress);
-
-//                        boolean insertimage = newnotedb.insertImage(img_str,"1");
-//                        Cursor catresult = newnotedb.selectCategoryTableWhere(newNotecategoryid);
+                        newnotedb.insertNewNoteTable(newNotecategoryid, usernotetitle.getText().toString(), usernotedetail.getText().toString(), currentnotedate, fullAddress);
+//                        String noteid = "";
+//                        Cursor catresult = newnotedb.selectNoteTitleTableWhere(usernotetitle.getText().toString());
 //                        if (catresult.getCount() == 0) {
 //                            Log.i("**DB**", "FAIL");
 //                        } else {
 //                            while (catresult.moveToNext()) {
-//                                usernotecategory.setText(catresult.getString(0));
+//                                noteid = catresult.getString(0);
 //                            }
 //                        }
-
-                        if (resultforinsert == true) {
-                            Toast.makeText(newNotes.this, "Data inserted", Toast.LENGTH_LONG).show();
-                        } else {
-                            Toast.makeText(newNotes.this, "Data not inserted", Toast.LENGTH_LONG).show();
-                        }
+//
+//                        String bittostringimage = BitMapToString(imageBit);
+//                        boolean insertimage = newnotedb.insertImage(bittostringimage,noteid);
+//                        if (resultforinsert == true) {
+//                            Toast.makeText(newNotes.this, "Data inserted", Toast.LENGTH_LONG).show();
+//                        } else {
+//                            Toast.makeText(newNotes.this, "Data not inserted", Toast.LENGTH_LONG).show();
+//                        }
                         //navigate to note list
                         Intent mIntent = new Intent(newNotes.this, noteList.class);
                         mIntent.putExtra("passcategoryid", "");
@@ -236,6 +228,14 @@ public class newNotes extends AppCompatActivity {
                 });
         AlertDialog alert = builder.create();
         alert.show();
+    }
+
+    public String BitMapToString(Bitmap bitmap){
+        ByteArrayOutputStream baos=new  ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.PNG,100, baos);
+        byte [] b=baos.toByteArray();
+        String temp= Base64.encodeToString(b, Base64.DEFAULT);
+        return temp;
     }
 
 //    public String saveImage(Bitmap myBitmap) {

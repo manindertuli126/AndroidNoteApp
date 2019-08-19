@@ -1,0 +1,52 @@
+package com.example.notesapp;
+
+import android.content.Context;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.BaseAdapter;
+import android.widget.TextView;
+
+import java.util.ArrayList;
+
+public class customallnotes extends BaseAdapter {
+    private Context mContext;
+    public static ArrayList<String> notetitleArrayList = new ArrayList<String>();
+    public static ArrayList<String> notelocationArrayList = new ArrayList<String>();
+    public static ArrayList<String> notedateArrayList = new ArrayList<String>();
+
+    public customallnotes(Context nc){
+        mContext = nc;
+    }
+
+    @Override
+    public int getCount() {
+        return notetitleArrayList.size();
+    }
+
+    @Override
+    public Object getItem(int position) {
+        return notetitleArrayList.get(position);
+    }
+
+    @Override
+    public long getItemId(int position) {
+        return position;
+    }
+
+    @Override
+    public View getView(int position, View convertView, ViewGroup parent) {
+        if (convertView == null) {
+            convertView = LayoutInflater.from(mContext).
+                    inflate(R.layout.custom_show_allnotes,parent, false);
+        }
+        TextView notetitle = convertView.findViewById(R.id.allnote_title);
+        TextView notedate = convertView.findViewById(R.id.allnote_date);
+        TextView notelocation = convertView.findViewById(R.id.allnote_location);
+
+        notetitle.setText(notetitleArrayList.get(position));
+        notedate.setText(notedateArrayList.get(position));
+        notelocation.setText(notelocationArrayList.get(position));
+        return convertView;
+    }
+}

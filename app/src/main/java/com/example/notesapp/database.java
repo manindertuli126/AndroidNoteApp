@@ -15,13 +15,15 @@ public class database extends SQLiteOpenHelper {
     public static final String TABLE_NAME3 = "NotesImage_tbl";
 
     public static final String CAT_COL = "categoryname";
+
+    public static final String NOTE_COL0= "id";
     public static final String NOTE_COL1 = "categoryid";
     public static final String NOTE_COL2 = "notetitle";
     public static final String NOTE_COL3 = "notedetail";
     public static final String NOTE_COL4 = "notedate";
     public static final String NOTE_COL5 = "notelocation";
 
-    public static final String NOTE_IMAGE_COL1 = "noteid";
+    public static final String NOTE_IMAGE_COL1 = "notetitle";
     public static final String NOTE_IMAGE_COL2 = "noteimage";
 
     public database(Context context) {
@@ -33,7 +35,7 @@ public class database extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         db.execSQL("create table "+TABLE_NAME1+" (id INTEGER PRIMARY KEY AUTOINCREMENT,categoryname TEXT)");
         db.execSQL("create table "+TABLE_NAME2+" (id INTEGER PRIMARY KEY AUTOINCREMENT,categoryid INTEGER,notetitle TEXT, notedetail TEXT, notedate TEXT, notelocation TEXT)");
-        db.execSQL("create table "+TABLE_NAME3+" (noteid INTEGER, noteimage BLOB)");
+        db.execSQL("create table "+TABLE_NAME3+" (notetitle TEXT, noteimage BLOB)");
     }
 
     @Override
@@ -42,12 +44,12 @@ public class database extends SQLiteOpenHelper {
 //        onCreate(db);
     }
 
-    public boolean insertImage(String imagelocation, String noteid){
+    public boolean insertImage(String imagelocation, String notetitle){
         SQLiteDatabase db = this.getWritableDatabase();
 
         // Create a new map of values, where column names are the keys
         ContentValues values = new ContentValues();
-        values.put(NOTE_IMAGE_COL1, noteid);
+        values.put(NOTE_IMAGE_COL1, notetitle);
         values.put(NOTE_IMAGE_COL2, imagelocation);
 
         // Insert the new row, returning the primary key value of the new row
@@ -89,12 +91,29 @@ public class database extends SQLiteOpenHelper {
         return res;
     }
 
+    public Cursor selectnotesTable(){
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor res  = db.rawQuery("select * from "+TABLE_NAME2,null);
+        return res;
+    }
+
     public Cursor selectCategoryTableWhere(String catid){
         SQLiteDatabase db2 = this.getWritableDatabase();
         Cursor res = db2.query
                 (TABLE_NAME1,
                         new String[] {CAT_COL},
                         "id" + "=" + catid,
+                        null, null, null, null, null
+                );
+        return res;
+    }
+
+    public Cursor selectImageTableWhere(String notetitle){
+        SQLiteDatabase db2 = this.getWritableDatabase();
+        Cursor res = db2.query
+                (TABLE_NAME3,
+                        new String[] {NOTE_IMAGE_COL2},
+                        "notetitle" + "=" + notetitle,
                         null, null, null, null, null
                 );
         return res;
@@ -110,12 +129,52 @@ public class database extends SQLiteOpenHelper {
         return res;
     }
 
+    public Cursor selectNoteTitleTableWhere(String noteTitle){
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor res = db.query
+                (TABLE_NAME2,new String[] {NOTE_COL0}, "notetitle" + "=" + noteTitle,
+                        null, null, null, null, null
+                );
+        return res;
+    }
+
+    public Cursor searchlist(String keyword){
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery("select * from " + TABLE_NAME2 + " where " + NOTE_COL2 + " like ?", new String[] { "%" + keyword + "%" });
+        return cursor;
+    }
+
+    public Cursor searchCat(String keyword){
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery("select * from " + TABLE_NAME1 + " where " + CAT_COL + " like ?", new String[] { "%" + keyword + "%" });
+        return cursor;
+    }
+
     public Cursor selectallNoteListTableWhere(String noteid){
         SQLiteDatabase db = this.getWritableDatabase();
 
         Cursor res = db.query
                 (TABLE_NAME2,new String[] {NOTE_COL2,NOTE_COL3}, "id" + "=" + noteid,
                         null, null, null, null, null
+                );
+        return res;
+    }
+
+    public Cursor NoteListTableSortDesc(){
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        Cursor res = db.query
+                (TABLE_NAME2,new String[] {NOTE_COL2,NOTE_COL4,NOTE_COL5}, null,
+                        null, null, null, NOTE_COL2+" DESC", null
+                );
+        return res;
+    }
+    public Cursor NoteListTableSortAsc(){
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        Cursor res = db.query
+                (TABLE_NAME2,new String[] {NOTE_COL2,NOTE_COL4,NOTE_COL5}, null,
+                        null, null, null, NOTE_COL2+" ASC", null
                 );
         return res;
     }
@@ -163,9 +222,9 @@ public class database extends SQLiteOpenHelper {
         return db.delete(TABLE_NAME1, "id = ?", new String [] {catid});
     }
 
-    public Integer deleteFromNoteListTable(String noteid){
+    public Integer deleteFromNoteListTable(String notetitle){
         SQLiteDatabase db = this.getWritableDatabase();
-        return db.delete(TABLE_NAME2, "id = ?", new String [] {noteid});
+        return db.delete(TABLE_NAME2, "notetitle = ?", new String [] {notetitle});
     }
 
     public Integer deleteAllNoteListTable(String catid){

@@ -19,6 +19,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import java.io.IOException;
@@ -40,6 +41,8 @@ public class updateNote extends AppCompatActivity {
     private static final int REQUEST_LOCATION = 1;
     LocationManager locationManager;
     String fullAddress;
+    String getfulladdress;
+//    ImageView imview;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,6 +69,7 @@ public class updateNote extends AppCompatActivity {
         usernotecategory = findViewById(R.id.update_category);
         usernotetitle = findViewById(R.id.update_title);
         usernotedetail = findViewById(R.id.update_detail);
+//        imview = findViewById(R.id.update_image);
 
         Intent intent = getIntent();
         Notecategoryid = intent.getStringExtra("passcategoryid");
@@ -93,6 +97,14 @@ public class updateNote extends AppCompatActivity {
                 }
             }
         }
+//        Cursor catresult = updatenotedb.selectImageTableWhere(Noteid);
+//        if (catresult.getCount() == 0) {
+//            Log.i("**DB**", "FAIL");
+//        } else {
+//            while (catresult.moveToNext()) {
+//                imview.setImageBitmap(catresult.getString(0));
+//            }
+//        }
     }
 
     @Override
@@ -122,23 +134,68 @@ public class updateNote extends AppCompatActivity {
     }
 
     public void successAlert() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("SUCCESS !!");
-        builder.setMessage("Note Updated successfully ..")
-                .setCancelable(false)
-                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        //insert note to db
-                        updatenotedb.updatelistnoteTable(Noteid,Notecategoryid,usernotetitle.getText().toString(),usernotedetail.getText().toString(),currentnotedate,fullAddress);
-                         //navigate to note list
-                        Intent mIntent = new Intent(updateNote.this, noteList.class);
-                        mIntent.putExtra("passcategoryid", "");
-                        mIntent.putExtra("passcategoryid", Notecategoryid);
-                        startActivity(mIntent);
-                    }
-                });
-        AlertDialog alert = builder.create();
-        alert.show();
+//        Cursor notelistquery = updatenotedb.selectNoteListTableWhere(Noteid);
+//        if (notelistquery.getCount() == 0) {
+//            Log.i("noteListDB", "FAIL");
+//        } else {
+//            while (notelistquery.moveToNext()) {
+//                getfulladdress = notelistquery.getString(2);
+//            }
+//        }
+//        if (fullAddress.toLowerCase().equals(getfulladdress.toLowerCase())){
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle("SUCCESS !!");
+            builder.setMessage("Note Updated successfully ..")
+                    .setCancelable(false)
+                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            updatenotedb.updatelistnoteTable(Noteid,Notecategoryid,usernotetitle.getText().toString(),usernotedetail.getText().toString(),currentnotedate,fullAddress);
+                            Intent mIntent = new Intent(updateNote.this, noteList.class);
+                            mIntent.putExtra("passcategoryid", "");
+                            mIntent.putExtra("passcategoryid", Notecategoryid);
+                            startActivity(mIntent);
+                        }
+                    });
+            AlertDialog alert = builder.create();
+            alert.show();
+//        }else{
+//            AlertDialog.Builder builder = new AlertDialog.Builder(updateNote.this);
+//            builder.setTitle("UPDATE LOCATION !!");
+//            builder.setMessage("Do you want to update the note location ?")
+//                    .setCancelable(false)
+//                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+//                        public void onClick(DialogInterface dialog, int id) {
+//                            AlertDialog.Builder builder = new AlertDialog.Builder(updateNote.this);
+//                            builder.setTitle("SUCCESS !!");
+//                            builder.setMessage("Note Updated successfully ..")
+//                                    .setCancelable(false)
+//                                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+//                                        public void onClick(DialogInterface dialog, int id) {
+//                                            updatenotedb.updatelistnoteTable(Noteid,Notecategoryid,usernotetitle.getText().toString(),usernotedetail.getText().toString(),currentnotedate,getfulladdress);
+//                                            Intent mIntent = new Intent(updateNote.this, noteList.class);
+//                                            mIntent.putExtra("passcategoryid", "");
+//                                            mIntent.putExtra("passcategoryid", Notecategoryid);
+//                                            startActivity(mIntent);
+//                                        }
+//                                    });
+//                            AlertDialog alert = builder.create();
+//                            alert.show();
+//                        }
+//                    }).setNeutralButton("No", new DialogInterface.OnClickListener() {
+//                public void onClick(DialogInterface dialog, int id) {
+//                    dialog.cancel();
+//                    updatenotedb.updatelistnoteTable(Noteid,Notecategoryid,usernotetitle.getText().toString(),usernotedetail.getText().toString(),currentnotedate,fullAddress);
+//                    //navigate to note list
+//                    Intent mIntent = new Intent(updateNote.this, noteList.class);
+//                    mIntent.putExtra("passcategoryid", "");
+//                    mIntent.putExtra("passcategoryid", Notecategoryid);
+//                    startActivity(mIntent);
+//                }
+//            });
+//            AlertDialog alert = builder.create();
+//            alert.show();
+//        }
     }
 
     public void deleteAlert() {
@@ -149,7 +206,7 @@ public class updateNote extends AppCompatActivity {
                 .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         //insert note to db
-                        updatenotedb.deleteFromNoteListTable(Noteid);
+                        updatenotedb.deleteFromNoteListTable(usernotetitle.getText().toString());
                         //navigate to note list
                         Intent mIntent = new Intent(updateNote.this, noteList.class);
                         mIntent.putExtra("passcategoryid", "");
